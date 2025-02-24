@@ -28,3 +28,7 @@ The format of the tags should be like this :
 if you combine more than 1 tags use space to separate the tags like above. Also dont forget to use quote.
 
 `"tag_1 tag_2 tag_3 etc"` like this.
+
+### Customize setting
+
+The app setting are in the `/utils/setting.ts` file.
