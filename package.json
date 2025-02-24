@@ -1,0 +1,17 @@
+{
+  "name": "r34-new",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx ./app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/node": "^22.13.5",
+    "chalk": "^5.4.1",
+    "tsx": "^4.19.3"
+  }
+}
