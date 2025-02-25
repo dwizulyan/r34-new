@@ -31,4 +31,4 @@ if you combine more than 1 tags use space to separate the tags like above. Also 
 
 ### Customize setting
 
-The app setting are in the `/utils/setting.ts` file.
+The app setting are in the `src/utils/setting.ts` file.
