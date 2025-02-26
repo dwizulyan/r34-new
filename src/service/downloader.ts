@@ -1,4 +1,4 @@
-import { checkDir, processTag } from "../utils/common";
+import { checkDir, processTag, filterTag } from "../utils/common";
 import { settings } from "../utils/settings";
 import { IImage } from "../utils/types";
 import { pipeline } from "stream";
@@ -7,14 +7,26 @@ import { Readable } from "stream";
 import path from "path";
 import { setTimeout } from "timers/promises";
 import chalk from "chalk"
-
+const LINE_CLEAR = '\x1b[2K\r'
 
 export async function getImages(tags: string) {
     const fullUrl = settings.url.concat(`&tags=${tags}`)
     try {
+        console.log(chalk.cyan(`Finding images with ${tags} tag`))
         const request = await fetch(fullUrl);
+        if (!request.ok) {
+            throw Error("Error occured")
+
+        }
         const response: IImage[] = await request.json();
-        return response;
+        console.log(chalk.yellow(`Found ${response.length} images`))
+        await setTimeout(1000)
+        const { images, filteredCount } = filterTag(response)
+        console.log(chalk.cyan(`Start filtering images...`))
+        console.log(chalk.yellow(`${filteredCount} Image(s) filtered, ${images.length} images left are save!`))
+        console.log("")
+        await setTimeout(1000)
+        return images;
     } catch (err) {
         throw err;
     }
@@ -30,16 +42,14 @@ export async function download(url: string, destination: string, fileName: strin
         }
         const response = request.body?.getReader()
         async function processStream() {
-            console.log(`${chalk.cyan("downloading")} ${chalk.green(fileName)} ${chalk.yellow("[" + left + " left]")}`)
+            process.stdout.write(`${LINE_CLEAR}${chalk.yellow("[" + (left - 1) + " left]")} ${chalk.cyan("Downloading : " + fileName)}`)
             while (true) {
                 const { done, value } = await response.read();
                 if (done) break;
 
                 writer.write(value);
             }
-
-            console.log(`${chalk.blue("Done downloading, writing data to")} ${chalk.green(fullLocation)}`)
-            console.log("<----------------------------------------------------->")
+            process.stdout.write(`${LINE_CLEAR}${chalk.yellow("[" + (left - 1) + " left]")} ${chalk.yellow("Done downloading :" + fileName)}`)
             writer.close();
             await setTimeout(1000)
         };
